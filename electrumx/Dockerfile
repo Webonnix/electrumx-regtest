@@ -1,31 +1,33 @@
-FROM python:3.7-alpine3.9
+FROM python:3
 
+ARG ELECTRUMX_VERSION=1.12.00
 
-COPY ./bin /usr/local/bin
-COPY ./VERSION /tmp
+RUN apt-get update && \
+    apt-get install libleveldb-dev -y && \
+    pip install git+git://github.com/kyuupichan/electrumx.git@${ELECTRUMX_VERSION} && \
+    useradd electrumx && \
+    mkdir /srv/db && \
+    chown electrumx:electrumx /srv/db
 
-RUN VERSION=$(cat /tmp/VERSION) && \
-    chmod a+x /usr/local/bin/* && \
-    apk add --no-cache git build-base openssl && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community leveldb-dev && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing rocksdb-dev && \
-    pip install aiohttp pylru plyvel websockets python-rocksdb && \
-    git clone -b $VERSION https://github.com/kyuupichan/electrumx.git && \
-    cd electrumx && \
-    python setup.py install && \
-    apk del git build-base && \
-    rm -rf /tmp/*
+ENV DB_DIRECTORY=/srv/db
+ENV DAEMON_URL=electrumx:electrumx@bitcoind
+ENV HOST=
+ENV TCP_PORT=50001
 
-VOLUME ["/data"]
-ENV HOME /data
-ENV ALLOW_ROOT 1
-ENV DB_DIRECTORY /data
-ENV SERVICES=tcp://:50001,ssl://:50002,wss://:50004,rpc://0.0.0.0:8000
-ENV SSL_CERTFILE ${DB_DIRECTORY}/electrumx.crt
-ENV SSL_KEYFILE ${DB_DIRECTORY}/electrumx.key
-ENV HOST "electrumx"
-WORKDIR /data
+ENV SSL_PORT=50002
+ENV SSL_CERTFILE=/srv/db/server.crt
+ENV SSL_KEYFILE=/srv/db/server.key
 
-EXPOSE 50001 50002 50004 8000
+ENV DONATION_ADDRESS=15t4BEbJk8rUguSRHvbxrr1io6hbicvEpK
 
-CMD ["bitcoind:3000", "--", "init"]
+COPY motd /srv/motd
+
+ENV BANNER_FILE=/srv/motd
+
+USER electrumx
+
+VOLUME /srv/db
+EXPOSE 50001
+EXPOSE 50002
+
+ENTRYPOINT ["electrumx_server.py"]

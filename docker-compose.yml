@@ -1,7 +1,7 @@
 version: '2'
 services:
   bitcoind:
-    image: beam/bitcoind
+    image: beam/bitcoind:0.18.0
     build: "./bitcoind"
     ports:
       # faucet api
