@@ -11,18 +11,12 @@ RUN apt-get update && \
 
 ENV DB_DIRECTORY=/srv/db
 ENV DAEMON_URL=electrumx:electrumx@bitcoind
-ENV HOST=
+ENV HOST=electrumx
 ENV TCP_PORT=50001
 
 ENV SSL_PORT=50002
 ENV SSL_CERTFILE=/srv/db/server.crt
 ENV SSL_KEYFILE=/srv/db/server.key
-
-ENV DONATION_ADDRESS=15t4BEbJk8rUguSRHvbxrr1io6hbicvEpK
-
-COPY motd /srv/motd
-
-ENV BANNER_FILE=/srv/motd
 
 USER electrumx
 
