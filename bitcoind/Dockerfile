@@ -1,4 +1,4 @@
-FROM ruimarinho/bitcoin-core:0.18.1
+FROM ruimarinho/bitcoin-core:0.18.0
 
 WORKDIR /home/bitcoin
 
