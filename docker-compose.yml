@@ -17,7 +17,6 @@ services:
     build: "./electrumx"
     depends_on:
       - "bitcoind"
-    command: ["bitcoind:3000", "--", "init"]  
     ports:
       - "55002:50002"
       - "55001:50001"
