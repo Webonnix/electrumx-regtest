@@ -1,7 +1,7 @@
 version: '2'
 services:
   bitcoind:
-    image: andgohq/bitcoind
+    image: beam/bitcoind
     build: "./bitcoind"
     ports:
       # faucet api
@@ -13,10 +13,11 @@ services:
       - ./data/bitcoind:/home/bitcoin/.bitcoin
 
   electrumx:
-    image: andgohq/electrumx:1.8.7
+    image: beam/electrumx:1.12.0
+    build: "./electrumx"
     depends_on:
       - "bitcoind"
-    command: ["wait-for-it.sh", "bitcoind:3000", "--", "init"]  
+    command: ["bitcoind:3000", "--", "init"]  
     ports:
       - "55002:50002"
       - "55001:50001"
