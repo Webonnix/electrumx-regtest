@@ -10,9 +10,12 @@ RUN apt-get update && \
     chown electrumx:electrumx /srv/db
 
 ENV DB_DIRECTORY=/srv/db
-ENV DAEMON_URL=electrumx:electrumx@bitcoind
+ENV DAEMON_URL=http://electrum:electrum@bitcoind:18443
 ENV HOST=electrumx
 ENV TCP_PORT=50001
+ENV COIN=BitcoinSegwit
+ENV NET=regtest
+ENV PC_PORT=18443
 
 ENV SSL_PORT=50002
 ENV SSL_CERTFILE=/srv/db/server.crt
@@ -24,4 +27,4 @@ VOLUME /srv/db
 EXPOSE 50001
 EXPOSE 50002
 
-ENTRYPOINT ["electrumx_server.py"]
+CMD ["init"]

@@ -3,6 +3,7 @@ services:
   bitcoind:
     image: beam/bitcoind:0.18.0
     build: "./bitcoind"
+    container_name:  bitcoind:0.18.0
     ports:
       # faucet api
       - "3001:3000"
@@ -25,14 +26,3 @@ services:
       - "50002"
     volumes:
       - ./data/electrumx:/data
-    environment:
-      # bitcoind is valid
-      - DAEMON_URL=http://electrum:electrum@bitcoind:18443
-      - COIN=BitcoinSegwit
-      - NET=regtest
-      # 127.0.0.1 or electrumx is valid for RPC_HOST
-      - RPC_HOST=electrumx
-      - RPC_PORT=18443
-      - HOST=electrumx
-      - TCP_PORT=50001
-      - SSL_PORT=50002
