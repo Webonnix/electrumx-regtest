@@ -1,9 +1,9 @@
 version: '2'
 services:
   bitcoind:
-    image: beam/bitcoind:0.18.0
+    image: beam/bitcoind:0.17.0
     build: "./bitcoind"
-    container_name:  bitcoind:0.18.0
+    container_name:  bitcoind
     ports:
       # faucet api
       - "3001:3000"
@@ -14,15 +14,22 @@ services:
       - ./data/bitcoind:/home/bitcoin/.bitcoin
 
   electrumx:
-    image: beam/electrumx:1.12.0
+    image: lukechilds/electrumx
     build: "./electrumx"
     depends_on:
       - "bitcoind"
     ports:
       - "55002:50002"
       - "55001:50001"
-    expose:
-      - "50001"
-      - "50002"
     volumes:
       - ./data/electrumx:/data
+    environment:
+      - DAEMON_URL=http://electrum:electrum@bitcoind:18443
+      - COIN=BitcoinSegwit
+      - NET=regtest
+      - ALLOW_ROOT=1
+      #- RPC_HOST=electrumx
+      #- RPC_PORT=18443
+      #- HOST=electrumx
+    links:
+      - "bitcoind"
